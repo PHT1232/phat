@@ -1,0 +1,133 @@
+#Tạo CSDL nếu ko tồn tại
+CREATE DATABASE IF NOT EXISTS demo_db;
+
+#Cú pháp tạo cơ sở dữ liệu mới
+CREATE DATABASE IF NOT EXISTS nhanvien CHARACTER SET utf8 COLLATE utf8_general_ci;
+#Xóa cơ sở dữ liệu
+DROP DATABASE demo_db;
+
+#Chọn cơ sở dữ liệu
+USE nhanvien;
+
+USE nhanvien;
+#tạo bảng - table tên students có id, name, address, birthday, class, created_at, updated_at
+CREATE TABLE students(
+    id INT(11) PRIMARY KEY AUTO_INCREMENT, 
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) DEFAULT NULL,
+    birthday DATETIME DEFAULT NULL,
+    class VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT NULL
+);
+
+USE nhanvien;
+CREATE TABLE categories(
+id INT(11) PRIMARY KEY AUTO_INCREMENT,
+name VARCHAR(255) NOT NULL,
+status TINYINT(2) DEFAULT 0,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+);
+
+USE nhanvien;
+#Thêm dữ liệu vào bảng categories vừa tạo\
+#lưu ý bao các trường bởi cặp ký tự `` để tránh lỗi trùng
+INSERT INTO categories(`name`, `status`)
+			   VALUES ('Manh', 1);
+
+USE nhanvien;
+#lấy tất cả danh sách category đang có trên hệ thống
+#ký tự * đại diên cho lấy tất cả các trường
+SELECT * FROM categories;
+
+#lấy một số trường cụ thể
+SELECT id, name FROM categories;
+
+#lấy theo điều kiện 
+#lấy danh mục mà có id <0
+SELECT * FROM categories WHERE id < 0;
+#lấy danh mục mà có tên bằng mạnh
+SELECT * FROM categories WHERE name = 'Mạnh';
+#chỉ lấy 2 dạnh mục đầu tiên
+SELECT * FROM categories LIMIT 2;
+#chỉ lấy 2 bản ghi đầu tiên, trong 2 bản ghi này chỉ lấy bản ghi từ vị trí thứ 2 trở đi
+SELECT * FROM categories LIMIT 2 OFFSET 2;
+#lấy ra tất cả danh mục có id lớn hơn 1
+SELECT * FROM categories WHERE id > 0;
+
+#Update
+#luôn phải chỉ điều kiện là update cho bản ghi cụ thể nào,
+#nên câu lệnh update luôn phải đi kèm WHERE
+UPDATE categories SET name = 'New name', status = 5
+WHERE id = 1;
+SELECT * FROM categories;
+
+#Delete - xóa bản ghi khỏi bảng
+#luôn phải chỉ định điều kiện cụ thể
+#nên bắt buộc phải dùng WHERE
+DELETE FROM categories WHERE id = 15;
+
+#Tạo bảng tên là products với các trường id, category_id, name, price
+CREATE TABLE producer(
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    category_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    price INT(11) DEFAULT NULL
+);
+
+use nhanvien;
+#SELECT * FROM categories ORDER BY id DESC;
+
+SELECT * FROM categories ORDER BY status ASC;
+
+#lấy ra tất cả danh mục có id > 1 xắp xếp theo chiều giản dần của 
+#ngày tạo
+SELECT * FROM categories WHERE id > 1 ORDER BY created_at DESC;
+
+#Từ khóa LIKE
+#lấy ra tất cả các danh mục mà có tên chứa ký tự a
+#bac, a, ade, da ...v,v
+#ký tự % đại diện cho 1 ký tự bất kỳ
+SELECT * FROM categories WHERE name LIKE '%a%';
+
+#JOIN 2 bảng
+#Bắt buộc 2 bảng phải có mối quan hệ với nhau.
+#nếu giữa các bảng mà có trường trùng nhau thì cần phải gọi tường minh.
+#nên sử dụng innerjoin để đảm bảo dữ liệu ngoài ra còn có left join, right join.
+SELECT producer.*, categories.name AS category_name, categories.status AS category_status
+FROM producer
+INNER JOIN categories ON producer.category_id = categories.id
+
+#Từ khóa IN 
+#lấy ra tất cả danh mục mà có id = 1 hoặc có id = 2 hoặc có id = 4
+#Viết bằng thông thg
+SELECT * FROM categories WHERE id = 1 OR id = 2 OR id = 4;
+#Viết bằng IN
+SELECT * FROM categories WHERE id IN(1, 2, 4);
+
+#Từ khóa BETWEEN
+#Lấy ra tất cả danh mục mà có id nằm trong khoảng 1 và 8
+#viết thông thường
+SELECT * FROM categories WHERE id >= 1 AND id <= 8;
+#viết bằng between
+SELECT * FROM categories WHERE id BETWEEN 1 AND 8; 
+
+#Hàm Count
+#Đếm số bản ghi đang có trong bảng categories
+SELECT COUNT(id) AS count_id FROM categories;
+
+#hàm MAX
+#lấy ra giá trị lớn nhất của trường status trong bảng categories
+SELECT MIN(status) AS min_status FROM categories;
+
+#hàm AVG - tính giá trị trung bình của 1 trường nào đó 
+SELECT AVG(status) FROM categories;
+
+#hàm SUM - tính tổng các giá trị của 1 trường nào đó 
+SELECT SUM(status) FROM categories;
+
+#Từ khóa GROUP BY
+#tìm số lần xuất hiện của các giá trị của trường status trong 
+#bảng danh mục
+SELECT status, COUNT(id) AS count_status
+FROM categories GROUP BY status;z
