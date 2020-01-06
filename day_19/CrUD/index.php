@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <!--Liệt kê danh sách các sinh viên đang có trong hệ thống-->
 <?php
 session_start();

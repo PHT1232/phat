@@ -1,3 +1,4 @@
+<meta charset="UTF-8">
 <!--Hiển thị một form cho pháp thêm sinh viên mới-->
 <?php
 //nhúng file config để cho phép kết nối tới CSDL
